@@ -1,75 +1,82 @@
-import React, {useContext}from 'react';
-import ProyectoContext from '../../context/proyectos/proyectoContext';
+import React, { useContext } from 'react';
+import proyectoContext from '../../context/proyectos/proyectoContext';
 import tareaContext from '../../context/tareas/tareaContext';
 
 const Tarea = ({tarea}) => {
 
-    //extraer si un proyecto esta activo
-    const proyectosContext = useContext(ProyectoContext);
-    const {proyecto} = proyectosContext;
-    
-    //obtener la funcion del context de tarea
-    const tareasContext = useContext(tareaContext);
-    const {eliminarTarea, obtenerTareas, cambiarEstadoTarea, guardarTareaActual} = tareasContext;
-    
-    //extraer el proyecto 
-    const [proyectoActual] = proyecto;
+    // Extrar si un proyecto esta activo
+    const proyectosContext = useContext(proyectoContext);
+    const { proyecto } = proyectosContext;
 
-    //funcion que se ejecuta cuando el user presiona el btn de eliminar tarea
+    // obtener la función del context de tarea
+    const tareasContext = useContext(tareaContext);
+    const { eliminarTarea, obtenerTareas, actualizarTarea, guardarTareaActual } = tareasContext;
+
+
+    // Extraer el proyecto
+    const [proyectoActual] = proyecto;
+ 
+    // Función que se ejecuta cuando el usuario presiona el btn de eliminar tarea
     const tareaEliminar = id => {
-        eliminarTarea(id);
-        obtenerTareas(proyecto[0].id);
+        eliminarTarea(id, proyectoActual._id);
+        obtenerTareas(proyectoActual.id)
     }
-    //funcion que modifica el estado de las tareas 
+
+    // Función que modifica el estado de las tareas
     const cambiarEstado = tarea => {
-        if (tarea.estado) {
+        if(tarea.estado) {
             tarea.estado = false;
-        }else{
-            tarea.estado = true;
+        } else {
+            tarea.estado = true
         }
-        cambiarEstadoTarea(tarea);
+        actualizarTarea(tarea);
     }
-    //agrega una tarea actual cuando el usuario desea editarla
+
+    // Agrega una tarea actual cuando el usuario desea editarla
     const seleccionarTarea = tarea => {
         guardarTareaActual(tarea);
     }
 
-    return (
+    return ( 
         <li className="tarea sombra">
-            <p>{tarea.nombre}</p>
+            <p>{tarea.nombre} </p>
+
             <div className="estado">
-                {
-                    tarea.estado
-                        ? 
-                            (
-                                <button
-                                    type="button"
-                                    className="completo"
-                                    onClick={() => cambiarEstado(tarea)}
-                                >Completo</button>
-                            )
-                        :
-                            <button
-                                type="button"
-                                className="incompleto"
-                                onClick={() => cambiarEstado(tarea)}
-                            >Incompleto</button>
+                {tarea.estado 
+                ?  
+                    (
+                        <button
+                            type="button"
+                            className="completo"
+                            onClick={() => cambiarEstado(tarea)}
+                        >Completo</button>
+                    )
+                : 
+                    (
+                        <button
+                            type="button"
+                            className="incompleto"
+                            onClick={() => cambiarEstado(tarea)}
+                        >Incompleto</button>
+                    )
                 }
             </div>
+
             <div className="acciones">
-                <button
+                <button 
                     type="button"
                     className="btn btn-primario"
-                    onClick={() => seleccionarTarea(tarea)}
+                    onClick={() => seleccionarTarea(tarea) }
                 >Editar</button>
+
                 <button
                     type="button"
                     className="btn btn-secundario"
-                    onClick={() => tareaEliminar(tarea.id)}
+                    onClick={() => tareaEliminar(tarea._id)}
                 >Eliminar</button>
             </div>
         </li>
-    );
+     );
 }
  
 export default Tarea;
